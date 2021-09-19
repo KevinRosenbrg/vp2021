@@ -53,10 +53,19 @@
 	}
 	$list_html .= "</ul>";
 	
+	if(isset($_POST["photo_select_button"])) {
+		$pic_num = $_POST["photo_select"];
+		$pic_file = $photo_files[$pic_num];
+		$pic_html = '<img src="' .$photo_dir .$pic_file .'" alt="Tallinna Ülikool">';
+	}
+	
 	$photo_select_html = '<select name="photo_select">' ."\n";
 	for($i = 0; $i < $limit; $i ++) {
 		//<option value="0">fail.jpg</option>
 		$photo_select_html .= '<option value="' .$i .'">' .$photo_files[$i] ."</option> \n";
+		//if ($pic_num = $photo_files[$i]) {
+		//	$photo_select_html .= '<option value="' .$i .'" select>' .$photo_files[$i] ."</option> \n";
+		//}
 	}
 	$photo_select_html .= "</select> \n";
 	
@@ -96,6 +105,7 @@
 		?>
 		<form method="POST">
 			<?php echo $photo_select_html; ?>
+			<input type="submit" name="photo_select_button" value="Vali">
 		</form>
 		<?php
 			echo $pic_html; 
