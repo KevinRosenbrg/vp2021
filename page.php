@@ -5,8 +5,14 @@
 	require_once("fnc_user.php");
 	$author_name = "Kevin Rosenberg";
 	$todays_evaluation = null;
+	
 	$inserted_adjective = null;
 	$adjective_error = null;
+	
+	$where_email = null;
+	$inserted_email = null;
+	$password_error = null;
+	$email_error = null;
 	
 	//kontrolli kas on klikitud submit nuppu
 	if(isset($_POST["todays_adjective_input"])) {
@@ -20,7 +26,6 @@
 			$adjective_error = "Palun kirjuta tänase päeva kohta sobiv omadussõna!";
 		}
 	}
-	//var_dump($_POST);
 
 	$pic_num = null;
 	//$photo_dir = "../photos/";
@@ -28,10 +33,7 @@
 	$allowed_photo_types = ["image/jpeg", "image/png"];
 	//$all_files = scandir($photo_dir,);
 	$all_files = array_slice(scandir($photo_dir), 2);
-	//echo $all_files;
-	//var_dump($all_files);
 	//$only_files = array_slice($all_files, 2);
-	//var_dump($only_files);
 	
 	//sõelun välja ainult lubatud pildid
 	$photo_files = [];
@@ -57,9 +59,6 @@
 	
 	$pic_file_html = "\n <p>".$pic_file ."</p> \n";
 	
-	//fotode nimekiri
-	//<p>Valida on järgmised fotod: <strong>foto1.jpg</strong>, <strong>foto2.jpg</strong>, <strong>foto3.jpg</strong>.</p> 
-	//<ul>Valida on järgmised fotod: <li>foto1.jpg</li> <li>foto2.jpg</li> <li>foto3.jpg</li></ul>
 	$list_html = "<ul> \n";
 	for($i = 0; $i < $limit; $i ++){
 		$list_html .= "<li>" .$photo_files[$i] ."</li> \n";
@@ -76,8 +75,32 @@
 		$photo_select_html .= ">" .$photo_files[$i] ."</option> \n";
 	}
 	$photo_select_html .= "\t \t </select> \n";
+	
 	if(isset($_POST["login_submit"])) {
+		if (empty($_POST["email_input"])) {
+			$where_email = "Email on puudu!";
+		}
+		else {
+			$inserted_email = $_POST["email_input"];
+		}
+		if(!empty($_POST["email_input"])) {
+            $email = filter_var($_POST["email_input"], FILTER_VALIDATE_EMAIL);
+                if(strlen($email) < 5){
+                    $email_error = "Palun sisesta oma e-posti aadress kasutajatunnusesse!";
+                }
+        } 	
+		else {
+            $email_error = "Palun sisesta oma e-posti aadress kasutajatunnusesse!";
+        }
 		sign_in($_POST["email_input"], $_POST["password_input"]);
+		if(!empty($_POST["password_input"])){
+            if(strlen($_POST["password_input"]) < 8){
+                $password_error = "Salasõna on liiga lühike!";
+            }
+        } 
+		else {
+            $password_error = "Palun sisesta salasõna!";
+        }
 	}
 ?>
 <!DOCTYPE html>
@@ -101,9 +124,12 @@
 		
 		<hr>
 		<form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-			<input type="email" name="email_input" placeholder="Email">
+			<input type="email" name="email_input" placeholder="Email" value="<?php echo $inserted_email ?>">
 			<input type="password" name="password_input" placeholder="salasana">
 			<input type="submit" name="login_submit" value="YES">
+			<span><?php echo $where_email; ?></span>
+			<span><?php echo $email_error; ?></span>
+			<span><?php echo $password_error; ?></span>
 		</form>
 		
 		<p>Loo endale <a href="add_user.php">kasutajakonto</a></p>
@@ -120,8 +146,7 @@
 		</form>
 		<hr>
 		<?php
-			echo $todays_evaluation;
-			
+			echo $todays_evaluation;	
 		?>
 		<form method="POST">
 			<?php echo $photo_select_html; ?>

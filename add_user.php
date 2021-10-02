@@ -103,7 +103,9 @@
                 if(strlen($email) < 5){
                     $email_error = "Palun sisesta e-posti aadress kasutajatunnuseks!";
                 }
-            } else {
+				$notice = exist_email($email);
+            } 
+			else {
                 $email_error = "Palun sisesta e-posti aadress kasutajatunnuseks!";
             }
             

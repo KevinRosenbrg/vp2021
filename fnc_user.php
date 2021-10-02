@@ -56,4 +56,17 @@
 		$conn->close();
 		return $notice;
 	}
+	function exist_email($email) {
+		$notice = null;
+		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+		$stmt = $conn->prepare("SELECT id FROM vp_users WHERE email = ?");
+		echo $conn->error;
+		if($stmt->fetch()) {
+			$notice = "Selline email juba eksisteerib";
+		}
+		$stmt->close();
+		$conn->close();
+		return $notice;
+	}
 ?>

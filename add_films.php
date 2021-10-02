@@ -1,4 +1,16 @@
 <?php
+	//alustame sessiooni
+	session_start();
+	
+	if(!isset($_SESSION["user_id"])) {
+		header("Location: page.php");
+	}
+	
+	if(isset($_GET["logout"])) {
+		session_destroy();
+		header("Location: page.php");
+	}
+	
 	$author_name = "Kevin Rosenberg";
 	require_once("../../config.php");
 	//echo $server_host;
@@ -112,5 +124,9 @@
 			<input type="submit" name="film_submit" value="Salvesta">
 		</form>
 		<span><?php echo $film_store_notice; ?></span>
+		<hr>
+		<ul>
+			<li><a href="?logout=1">Logi välja</a></li>
+		</ul>
 	</body>
 </html>

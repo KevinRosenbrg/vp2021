@@ -33,6 +33,8 @@
 			<p>See leht on valminud õppetöö raames ja ei sisalda mingisugust tõsiseltvõetavat sisu!</p>
 		</div>
 		<p>Õppetöö toimus <a href="https://www.tlu.ee/dt">Tallinna Ülikooli Digitehnoloogiate Instituudis</a>.</p>
+		<a href="add_films.php">Lisa filme</a><br>
+		<a href="list_films.php">Uuri filme</a>
 		<hr>
 		<ul>
 			<li><a href="?logout=1">Logi välja</a></li>
