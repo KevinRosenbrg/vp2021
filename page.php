@@ -26,7 +26,7 @@
 			$adjective_error = "Palun kirjuta tänase päeva kohta sobiv omadussõna!";
 		}
 	}
-
+	
 	$pic_num = null;
 	//$photo_dir = "../photos/";
 	$photo_dir = "photos/";

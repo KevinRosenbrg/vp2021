@@ -39,6 +39,22 @@
 				$_SESSION["user_id"] = $id_from_db;
 				$_SESSION["first_name"] = $firstname_from_db;
 				$_SESSION["last_name"] = $lastname_from_db;
+				//kui loeme ka kasutajaprofiili siis saame teksti ja taustavarvi
+				$stmt->close();
+				//loeks kasutajaprofiili, kus on selle kasutaja id
+				$stmt= $conn->prepare("SELECT bgcolor, txtcolor FROM vp_userprofiles WHERE userid = ?");
+				$stmt->bind_param("i", $_SESSION["user_id"]);
+				$stmt->bind_result($bg_color, $txt_color);
+				$stmt->execute();
+				if($stmt->fetch()) {
+					$_SESSION["text_color"] = $txt_color;
+					$_SESSION["bg_color"] = $bg_color;
+				}
+				else {
+					$_SESSION["text_color"] = "#000000";
+					$_SESSION["bg_color"] = "#FFFFFF";
+				} 
+				
 				$stmt->close();
 				$conn->close();
 				header("Location: home.php");
@@ -69,4 +85,27 @@
 		$conn->close();
 		return $notice;
 	}
+	
+	function store_profile($description, $bg_color, $text_color) {
+		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+		$stmt = $conn->prepare("INSERT INTO vp_userprofiles (userid, description, bgcolor, txtcolor) VALUES(?,?,?,?)");
+		echo $conn->error;
+		
+		$stmt->bind_param("isss", $_SESSION["user_id"], $description, $bg_color, $text_color);
+		$notice = null;
+		if($stmt->execute()) {
+			$notice = "Profiil muudetud.";
+		}
+		else {
+			$notice = "Profiili muutmisel tekkis viga." .$stmt->error;
+		}
+		
+		$stmt->close();
+		$conn->close();
+		return $notice;
+	}
+	
+	
+	
 ?>

@@ -72,29 +72,20 @@
 			$inserted_director = $_POST["director_input"];
 		}
 	}
+	
+	require_once("page_header.php");
 ?>
-<!DOCTYPE html>
-<html lang="et">
-	<head>
-		<title><?php echo $author_name; ?>, veebiprogrammeerimine</title>
-		<style>
-			div {
-				background-color: yellow;
-				width: 250px;
-				outline: 3px dotted;
-			}
-			h1 {
-				text-align: center;
-			}
-		</style>
-		<meta charset="utf-8">
-	</head>
-	<body>
+
 		<h1><?php echo $author_name; ?>, veebiprogrammeerimine</h1>
 		<div>
 			<p>See leht on valminud õppetöö raames ja ei sisalda mingisugust tõsiseltvõetavat sisu!</p>
 		</div>
 		<p>Õppetöö toimus <a href="https://www.tlu.ee/dt">Tallinna Ülikooli Digitehnoloogiate Instituudis</a>.</p>
+		<hr>
+		<ul>
+			<li><a href="home.php">Avaleht</a></li>
+			<li><a href="?logout=1">Logi välja</a></li>
+		</ul>
 		<hr>
 		<h2>Eesti filmide lisamine andmebaasi</h2>
 		<form method ="POST">
