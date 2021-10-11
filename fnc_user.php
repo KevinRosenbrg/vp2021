@@ -89,6 +89,11 @@
 	function store_profile($description, $bg_color, $text_color) {
 		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
+		//$stmt = conn->prepare("SELECT userid FROM vp_userprofiles WHERE userid = ?");
+		//if($stmt->fetch()) {
+			//$stmt = conn->prepare("UPDATE vp_userprofiles SET description = ?, bgcolor = ?, txtcolor = ? WHERE userid = ?");
+		//}
+		//else {}
 		$stmt = $conn->prepare("INSERT INTO vp_userprofiles (userid, description, bgcolor, txtcolor) VALUES(?,?,?,?)");
 		echo $conn->error;
 		
