@@ -89,15 +89,23 @@
 	function store_profile($description, $bg_color, $text_color) {
 		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
-		//$stmt = conn->prepare("SELECT userid FROM vp_userprofiles WHERE userid = ?");
-		//if($stmt->fetch()) {
-			//$stmt = conn->prepare("UPDATE vp_userprofiles SET description = ?, bgcolor = ?, txtcolor = ? WHERE userid = ?");
-		//}
-		//else {}
-		$stmt = $conn->prepare("INSERT INTO vp_userprofiles (userid, description, bgcolor, txtcolor) VALUES(?,?,?,?)");
+		$stmt = $conn->prepare("SELECT userid FROM vp_userprofiles WHERE userid = ?");
 		echo $conn->error;
-		
-		$stmt->bind_param("isss", $_SESSION["user_id"], $description, $bg_color, $text_color);
+		$stmt->bind_param("i", $_SESSION["user_id"]);
+		$stmt->bind_result($id_from_db);
+		$stmt->execute();
+		if($stmt->fetch()) {
+			$stmt->close();
+			$stmt = $conn->prepare("UPDATE vp_userprofiles SET description = ?, bgcolor = ?, txtcolor = ? WHERE userid = ?");
+			echo $conn->error;
+			$stmt->bind_param("sssi", $description, $bg_color, $text_color, $_SESSION["user_id"]);
+		}
+		else {
+			$stmt->close();
+			$stmt = $conn->prepare("INSERT INTO vp_userprofiles (userid, description, bgcolor, txtcolor) VALUES(?,?,?,?)");
+			echo $conn->error;
+			$stmt->bind_param("isss", $_SESSION["user_id"], $description, $bg_color, $text_color);
+		}
 		$notice = null;
 		if($stmt->execute()) {
 			$notice = "Profiil muudetud.";

@@ -67,6 +67,26 @@
 		return $html;
 	}
 	
+	function read_all_company($selected) {
+		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+		$stmt = $conn->prepare("SELECT id, company_name FROM production_company");
+		$stmt->bind_result($id_from_db, $company_name_from_db);
+		$stmt->execute();
+		while($stmt->fetch()) {
+			$html .= '<option value="' .$id_from_db .'"';
+			if($selected == $id_from_db) {
+				$html .= " selected";
+			}
+			$html .= ">" .$company_name_from_db ."</option> \n";
+		}
+		echo $conn->error;
+		
+		$stmt->close();
+		$conn->close();
+		return $html;
+	}
+	
 	function store_movie_info($selected_person, $selected_movie, $selected_position, $role_input) {
 		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
@@ -91,10 +111,10 @@
 		$stmt = $conn->prepare("INSERT INTO person (picture_file_name, person_id) values(?,?)");
 		$stmt->bind_param("si", $file_name, $person_id);
 		if ($stmt->execute()) {
-			$notice = "Pilt salvestatud."
+			$notice = "Pilt salvestatud.";
 		}
 		else {
-			$notice = "Salvestamisel tekkis viga."
+			$notice = "Salvestamisel tekkis viga.";
 		}
 		
 		echo $conn->error;
@@ -104,4 +124,21 @@
 		return $notice;
 	}
 	
+	function store_movie_company($selected_movie2, $selected_company) {
+		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+		$stmt = $conn->prepare("INSERT INTO movie_by_production_company (movie_id, production_company_id) values(?,?)");
+		echo $conn->error;
+		$stmt->bind_param("ii", $selected_movie2, $selected_company);
+		$success = null;
+		if($stmt->execute()) {
+			$success = "Salvestamine õnnestus";
+		}
+		else {
+			$success = "Salvestamisel tekkis viga: " .$stmt->error;
+		}
+		$stmt->close();
+		$conn->close();
+		return $success;
+	}
 ?>

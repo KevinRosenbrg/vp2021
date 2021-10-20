@@ -21,6 +21,7 @@
 	$selected_movie = null;
 	$selected_position = null;
 	$movie_info_store_notice = null;
+	$movie_company_store_notice = null;
 	
 	$selected_person_for_photo = null;
 	$photo_upload_notice = null;
@@ -58,6 +59,15 @@
 			//$photo_upload_notice = store_photo()
 		}
 	}	
+	
+	if(isset($_POST["movie_by_production_company_submit"])) {
+		if((!empty($_POST["movie2_input"])) and (!empty($_POST["company_input"]))) {
+			$movie_company_store_notice = store_movie_company($_POST["movie2_input"], $_POST["company_input"]);
+		}
+		else {
+			$movie_company_store_notice_notice = "Osa andmeid on puudu!";
+		}
+	}
 		
 	require_once("page_header.php");
 ?>
@@ -109,5 +119,21 @@
 			<input type="submit" name="person_photo_submit" value="Lae pilt üles">
 		</form>
 		<span><?php echo $photo_upload_notice; ?></span>
+		<hr>
+		<h3>Filmi produtseerija</h3>
+		<form method ="POST">
+			<label for="movie2_input">Film: </label>
+			<select name="movie2_input" id="movie2_input">
+				<option value="" selected disabled>Vali film</option>
+				<?php echo read_all_movie($selected_movie2); ?>
+			</select>
+			<label for="company_input">Produtseerija: </label>
+			<select name="company_input" id="company_input">
+				<option value="" selected disabled>Vali produtseerija</option>
+				<?php echo read_all_company($selected_company); ?>
+			</select>
+			<input type="submit" name="movie_by_production_company_submit" value="Salvesta">
+		</form>
+		<span><?php echo $movie_company_store_notice; ?><span>
 	</body>
 </html>

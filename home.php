@@ -19,6 +19,7 @@
 		<p>Õppetöö toimus <a href="https://www.tlu.ee/dt">Tallinna Ülikooli Digitehnoloogiate Instituudis</a>.</p>
 		<a href="user_profile.php">Kasutajaprofiil</a><br>
 		<a href="add_films.php">Lisa filme</a><br>
+		<a href="add_movie_info.php">Lisa muud infot</a><br>
 		<a href="list_films.php">Uuri filme</a><br>
 		<a href="movie_relations.php">Filmi relatsioonid</a>
 		<hr>
