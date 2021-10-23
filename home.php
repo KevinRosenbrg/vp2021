@@ -21,7 +21,9 @@
 		<a href="add_films.php">Lisa filme</a><br>
 		<a href="add_movie_info.php">Lisa muud infot</a><br>
 		<a href="list_films.php">Uuri filme</a><br>
-		<a href="movie_relations.php">Filmi relatsioonid</a>
+		<a href="movie_relations.php">Filmi relatsioonid</a><br>
+		<a href="show_relations.php">Uuri relatsioone</a><br>
+		<a href="list_people.php">Uuri inimesi</a>
 		<hr>
 		<ul>
 			<li><a href="?logout=1">Logi välja</a></li>

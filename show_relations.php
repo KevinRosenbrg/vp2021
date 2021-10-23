@@ -13,10 +13,10 @@
 	
 	$author_name = "Kevin Rosenberg";
 	require_once("../../config.php");
-	require_once("fnc_time_formater.php");
 	require_once("fnc_film.php");
-	$films_html = null;
-	$films_html = read_all_films();
+	
+	$relation_table_html = null;
+	$realtion_table_html = join_movie_info();
 	
 	require_once("page_header.php");
 ?>
@@ -31,9 +31,9 @@
 			<li><a href="?logout=1">Logi välja</a></li>
 		</ul>
 		<hr>
-		<h2>Eesti filmid</h2>
+		<h2>Mingi tabel</h2>
 		<?php
-		echo $films_html;
+		echo $realtion_table_html;
 		?>
 	</body>
 </html>

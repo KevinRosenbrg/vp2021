@@ -15,8 +15,8 @@
 	require_once("../../config.php");
 	require_once("fnc_time_formater.php");
 	require_once("fnc_film.php");
-	$films_html = null;
-	$films_html = read_all_films();
+	$people_html = null;
+	$people_html = read_all_people();
 	
 	require_once("page_header.php");
 ?>
@@ -31,9 +31,9 @@
 			<li><a href="?logout=1">Logi välja</a></li>
 		</ul>
 		<hr>
-		<h2>Eesti filmid</h2>
+		<h2>Eesti inimesed</h2>
 		<?php
-		echo $films_html;
+		echo $people_html;
 		?>
 	</body>
 </html>
