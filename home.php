@@ -23,7 +23,8 @@
 		<a href="list_films.php">Uuri filme</a><br>
 		<a href="movie_relations.php">Filmi relatsioonid</a><br>
 		<a href="show_relations.php">Uuri relatsioone</a><br>
-		<a href="list_people.php">Uuri inimesi</a>
+		<a href="list_people.php">Uuri inimesi</a><br>
+		<a href="gallery_photo_upload.php">Fotode üleslaadimine</a>
 		<hr>
 		<ul>
 			<li><a href="?logout=1">Logi välja</a></li>
