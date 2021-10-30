@@ -12,6 +12,7 @@
 	
 	require_once("../../config.php");
 	require_once("fnc_photo_upload.php");
+	require_once("fnc_general.php");
 	
 	$photo_error = null;
 	$photo_upload_notice = null;
@@ -28,7 +29,7 @@
 	$photo_filename_prefix = "vp_";
 	$photo_upload_size_limit = 1024 * 1024;
 	$photo_size_ratio = 1;
-	$watermark_file = "pics/";
+	$watermark_file = "pics/vp_logo_w100_overlay.png";
 	
 	
     if(isset($_POST["photo_submit"])){
@@ -83,21 +84,19 @@
 				//koigepealt pildi mõõdud
 				$image_width = imagesx($my_temp_image);
 				$image_height = imagesy($my_temp_image);
+				
 				if($image_width / $normal_photo_max_width > $image_height / $normal_photo_max_height) {
 					$photo_size_ratio = $image_width / $normal_photo_max_width;
 				}
 				else {
 					$photo_size_ratio = $image_height / $normal_photo_max_height;
 				}
-				//arvutame uue laiuse ja korguse
 				
 				$new_width = round($image_width / $photo_size_ratio);
 				$new_height = round($image_height / $photo_size_ratio);
-				
-				//loome uue pikslikogumi
-				$my_new_temp_image = imagecreatetruecolor($new_width, $new_height);
-				//kopeerime vajalikud pikslid uude objekti
-				imagecopyresampled($my_new_temp_image, $my_temp_image, 0, 0, 0, 0, $new_width, $new_height, $image_width, $image_height);
+		
+				//vigane koht, foto üleslaadimine annab teada, et image_width ja image_height vajavad numbrit
+				$my_new_temp_image = photo_resizer($my_temp_image, $new_width, $new_height);
 				
 				//lisan vesimärgi
 				$watermark = imagecreatefrompng($watermark_file);

@@ -27,4 +27,16 @@
 		}
 		return $notice;
 	}
+	
+	function photo_resizer ($my_temp_image, $new_width, $new_height) {
+		$notice = null;
+		
+		//loome uue pikslikogumi
+		$my_new_temp_image = imagecreatetruecolor($new_width, $new_height);		
+		//kopeerime vajalikud pikslid uude objekti
+		$notice = imagecopyresampled($my_new_temp_image, $my_temp_image, 0, 0, 0, 0, $new_width, $new_height, $image_width, $image_height);
+		
+		return $notice;
+		
+	}
 ?>
