@@ -16,9 +16,6 @@
 	
 	$photo_error = null;
 	$photo_upload_notice = null;
-	$photo_orig_upload_dir = "../upload_photos_orig/";
-	$photo_normal_upload_dir = "../upload_photos_normal/";
-	$photo_thumbnail_upload_dir = "../upload_photos_thumbnail/";
 	$normal_photo_max_width = 600;
 	$normal_photo_max_height = 400;	
 	
@@ -29,6 +26,7 @@
 	$photo_filename_prefix = "vp_";
 	$photo_upload_size_limit = 1024 * 1024;
 	$photo_size_ratio = 1;
+	$thumbnail_width = $thumbnail_height = 100;
 	$watermark_file = "pics/vp_logo_w100_overlay.png";
 	
 	
@@ -46,6 +44,7 @@
                 if($image_check["mime"] == "image/gif"){
                     $file_type = "gif";
                 }
+                //var_dump($image_check);
             } else {
                 $photo_error = "Valitud fail ei ole pilt!";
             }
@@ -57,75 +56,76 @@
             
             //kas alt tekst on
             if(isset($_POST["alt_input"]) and !empty($_POST["alt_input"])){
-					$alt_text = test_input(filter_var($_POST["alt_input"], FILTER_SANITIZE_STRING));
-                if(empty($alt_text)){
+                $alt_text = test_input(filter_var($_POST["alt_input"], FILTER_SANITIZE_STRING));
+/*                 if(empty($alt_text)){
                     $photo_error .= "Alternatiivtekst on lisamata!";
-                }
+                } */
             }
+			
+			//kas on privaatsus
+			if(isset($_POST["privacy_input"]) and !empty($_POST["privacy_input"])){
+				$privacy = filter_var($_POST["privacy_input"], FILTER_VALIDATE_INT);
+			}
+			if(empty($privacy)){
+				$photo_error . " Privaatsus on määramata!";
+			}
+			
             
             if(empty($photo_error)){
+                //teen ajatempli
                 $time_stamp = microtime(1) * 10000;
                 
                 //moodustan failinime, kasutame eesliidet
                 $file_name = $photo_filename_prefix ."_" .$time_stamp ."." .$file_type;
+                
+                //teen graafikaobjekti, image objekti
+                if($file_type == "jpg"){
+                    $my_temp_image = imagecreatefromjpeg($_FILES["photo_input"]["tmp_name"]);
+                }
+                if($file_type == "png"){
+                    $my_temp_image = imagecreatefrompng($_FILES["photo_input"]["tmp_name"]);
+                }
+                if($file_type == "gif"){
+                    $my_temp_image = imagecreatefromgif($_FILES["photo_input"]["tmp_name"]);
+                }
+                
+                //loome uue pikslikogumi
+                $my_new_temp_image = resize_photo($my_temp_image, $normal_photo_max_width, $normal_photo_max_height);
+                                
+                //lisan vesimärgi
 				
+				add_watermark($my_new_temp_image, $watermark_file);
+                
+                //salvestan
+                $photo_upload_notice = "Vähendatud pildi " .save_image($my_new_temp_image, $file_type, $photo_normal_upload_dir .$file_name);
+                imagedestroy($my_new_temp_image);
 				
-				//teen graafikaobjekti, image objekti
-				if ($file_type == "jpg") {
-					$my_temp_image = imagecreatefromjpeg($_FILES["photo_input"]["tmp_name"]);
-				}
-				if ($file_type == "png") {
-					$my_temp_image = imagecreatefrompng($_FILES["photo_input"]["tmp_name"]);
-				}
-				if ($file_type == "gif") {
-					$my_temp_image = imagecreatefromgif($_FILES["photo_input"]["tmp_name"]);
-				}
-				//otsustame kas tuleb laiuse voi korguse jargi suhe
-				//koigepealt pildi mõõdud
-				$image_width = imagesx($my_temp_image);
-				$image_height = imagesy($my_temp_image);
-				
-				if($image_width / $normal_photo_max_width > $image_height / $normal_photo_max_height) {
-					$photo_size_ratio = $image_width / $normal_photo_max_width;
-				}
-				else {
-					$photo_size_ratio = $image_height / $normal_photo_max_height;
-				}
-				
-				$new_width = round($image_width / $photo_size_ratio);
-				$new_height = round($image_height / $photo_size_ratio);
-		
-				//vigane koht, foto üleslaadimine annab teada, et image_width ja image_height vajavad numbrit
-				$my_new_temp_image = photo_resizer($my_temp_image, $new_width, $new_height);
-				
-				//lisan vesimärgi
-				$watermark = imagecreatefrompng($watermark_file);
-				$watermark_width = imagesx($watermark);
-				$watermark_height = imagesy($watermark);
-				$watermark_x = $new_width - $watermark_width - 10;
-				$watermark_y = $new_height - $watermark_height - 10;
-				imagecopy($my_new_temp_image, $watermark, $watermark_x, $watermark_y, 0, 0, $watemark_width, $watermark_height);
-				imagedestroy($watermark);
-				
-				$photo_upload_notice = save_image($my_new_temp_image, $file_type, $photo_normal_upload_dir .$file_name);
-				imagedestroy($my_new_temp_image);
-				
-				
-				imagedestroy($my_temp_image);
-				
+				//teen pisipildi
+				$my_new_temp_image = resize_photo($my_temp_image, $thumbnail_width, $thumbnail_height, false);
+                $photo_upload_notice .= " Pisipildi " .save_image($my_new_temp_image, $file_type, $photo_thumbnail_upload_dir .$file_name);
+                imagedestroy($my_new_temp_image);
+                
+                imagedestroy($my_temp_image);
+                
                 //kopeerime pildi originaalkujul, originaalnimega vajalikku kataloogi
                 if(move_uploaded_file($_FILES["photo_input"]["tmp_name"], $photo_orig_upload_dir .$file_name)){
-                    $photo_upload_notice = "Originaalfoto laeti üles!";
+                    $photo_upload_notice .= " Originaalfoto laeti üles!";
                     //$photo_upload_notice = store_person_photo($file_name, $_POST["person_for_photo_input"]);
                 } else {
-                    $photo_upload_notice .= "Foto üleslaadimine ei õnnestunud!";
+                    $photo_upload_notice .= " Foto üleslaadimine ei õnnestunud!";
                 }
+				
+				$photo_upload_notice .= " " .store_photo_data($file_name, $alt_text, $privacy);
+				$alt_text = null;
+				$privacy = 1;
             }
         } else {
             $photo_error = "Pildifaili pole valitud!";
         }
         
-        $photo_upload_notice = $photo_error;
+        if(empty($photo_upload_notice)){
+			$photo_upload_notice = $photo_error;
+		}
     }
 	
 	

@@ -24,7 +24,10 @@
 		<a href="movie_relations.php">Filmi relatsioonid</a><br>
 		<a href="show_relations.php">Uuri relatsioone</a><br>
 		<a href="list_people.php">Uuri inimesi</a><br>
-		<a href="gallery_photo_upload.php">Fotode üleslaadimine</a>
+		<a href="gallery_photo_upload.php">Fotode üleslaadimine</a><br>
+		<a href="gallery_public.php">Fotode galerii</a><br>
+		<a href="gallery_own.php">Oma fotode galerii</a><br>
+		
 		<hr>
 		<ul>
 			<li><a href="?logout=1">Logi välja</a></li>

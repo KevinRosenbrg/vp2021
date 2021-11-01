@@ -17,7 +17,12 @@
 <html lang="et">
 	<head>
 		<title><?php echo $_SESSION["first_name"] ." " .$_SESSION["last_name"]; ?>, veebiprogrammeerimine</title>
-		<?php echo $css_color; ?>
+		<?php 
+		echo $css_color;
+		if(isset($to_head) and !empty($to_head)) {
+			echo $to_head;
+		} 
+		?>
 		<style>
 			div {
 				background-color: yellow;
