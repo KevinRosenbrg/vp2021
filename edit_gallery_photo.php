@@ -15,8 +15,8 @@
 	require_once("../../config.php");
 	require_once("fnc_gallery.php");
 	
-	if(isset($_GET["photo"] and !empty $_GET["photo"])) {
-		
+	if(isset($_GET["photo"]) and !empty ($_GET["photo"])) {
+	
 	} else {
 		header("Location: home.php");
 	}
@@ -35,6 +35,11 @@
 		</ul>
 		<hr>
 		<h2>Foto andmete muutmine</h2>
-		<?php echo read_own_photo_thumbs($page_limit, $page); ?>
+		<?php 
+		echo user_see_photo();
+		if (user_see_photo() == "Yes") {
+			echo show_selected_photo($_GET["photo"]);
+		}
+		?>
 	</body>
 </html>

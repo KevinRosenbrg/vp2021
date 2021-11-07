@@ -23,16 +23,6 @@
 			echo $to_head;
 		} 
 		?>
-		<style>
-			div {
-				background-color: yellow;
-				width: 250px;
-				outline: 3px dotted;
-			}
-			h1 {
-				text-align: center;
-			}
-		</style>
 		<meta charset="utf-8">
 </head>
 <body>

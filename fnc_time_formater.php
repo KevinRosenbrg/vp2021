@@ -10,9 +10,9 @@
 		return $time;
 	}
 	
-	function wrong_into_correct_time($birth_date_from_db) {
-		$got_birth_date = new DateTime($birth_date_from_db);
-		$formated_date = $got_birth_date->format("d.m.Y");
+	function wrong_into_correct_time($unformated_date) {
+		$formate_date = new DateTime($unformated_date);
+		$formated_date = $formate_date->format("d.m.Y");
 		
 		return $formated_date;
 	}

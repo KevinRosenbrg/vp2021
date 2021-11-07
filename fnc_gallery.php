@@ -36,10 +36,10 @@
 		$skip = ($page - 1) * $page_limit;
 		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("select filename, alttext from vp_photos where id = (select max(id) from vp_photos where privacy >= ? and deleted is null order by id desc limit ?,?)");
+		$stmt = $conn->prepare("SELECT filename, alttext, created FROM vp_photos WHERE privacy >= ? AND deleted IS NULL ORDER BY id DESC LIMIT ?,?");
 		echo $conn->error;
 		$stmt->bind_param("iii", $privacy, $skip, $page_limit);
-		$stmt->bind_result($filename_from_db, $alttext_from_db);
+		$stmt->bind_result($filename_from_db, $alttext_from_db, $created_from_db);
 		$stmt->execute();
 		while($stmt->fetch()) {
 			//<div class="thumbgallery">
@@ -53,6 +53,7 @@
 				$gallery_html .= $alttext_from_db;
 			}
 			$gallery_html .= '" class="thumbs">' ."\n";
+			$gallery_html .= "<p>" .wrong_into_correct_time($created_from_db) ."</p>";
 			$gallery_html .= "</div>";
 		}
 		if(empty($gallery_html)) {
@@ -95,7 +96,7 @@
 		$photo_count = 0;
 		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("SELECT count (id) FROM vp_photos WHERE privacy >= ? AND deleted IS null order by id desc limit 3,3");
+		$stmt = $conn->prepare("SELECT COUNT(id) FROM vp_photos WHERE privacy >= ? AND deleted IS NULL");
 		echo $conn->error;
 		$stmt->bind_param("i", $privacy);
 		$stmt->bind_result($count);
@@ -113,7 +114,7 @@
 		$skip = ($page - 1) * $page_limit;
 		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("SELECT filename, alttext FROM vp_photos WHERE id = (SELECT MAX(id) FROM vp_photos WHERE userid = ? AND deleted IS null order by id desc limit ?,?)");
+		$stmt = $conn->prepare("SELECT id, filename, alttext FROM vp_photos WHERE userid = ? AND deleted IS NULL ORDER BY id DESC LIMIT ?,?");
 		echo $conn->error;
 		$stmt->bind_param("iii", $_SESSION["user_id"], $skip, $page_limit);
 		$stmt->bind_result($id_from_db, $filename_from_db, $alttext_from_db);
@@ -142,4 +143,39 @@
 		return $gallery_html;
 	}
 	
+	function user_see_photo() {
+		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+		$stmt = $conn->prepare("SELECT id FROM vp_photos WHERE userid = ?");
+		echo $conn->error;
+		$stmt->bind_param("i", $_SESSION["user_id"]);
+		$stmt->execute();
+		if($stmt->fetch()) {
+			$see_photo = "Yes";
+		} else {
+			$see_photo = "No";
+		}
+		return $see_photo;
+	}
+	
+	function show_selected_photo($photo_id) {
+		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+		$stmt = $conn->prepare("SELECT filename, alttext FROM vp_photos WHERE id = ?");
+		echo $conn->error;
+		$stmt->bind_param("i", $id_from_db);
+		$stmt->bind_result($filename_from_db, $alttext_from_db);
+		$stmt->execute();
+
+		$own_photo_html = 0;
+		$own_photo_html = '<img src="' .$GLOBALS["photo_thumbnail_upload_dir"] .$filename_from_db .'" alt="';
+		if(empty($alttext_from_db)) {
+			$own_photo_html .= "Üleslaetud foto";
+		} else {
+			$own_photo_html .= $alttext_from_db;
+		}
+		$own_photo_html .= '">' ."\n";
+		
+		return $own_photo_html;
+	}
 ?>

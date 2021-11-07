@@ -13,13 +13,12 @@
 	
 	$author_name = "Kevin Rosenberg";
 	require_once("../../config.php");
-	require_once("fnc_time_formater.php");
 	require_once("fnc_gallery.php");
 	
 	$page = 1;
 	$page_limit = 3;
 	$photo_count = count_public_photos(2);
-	if(null !== ($_GET["page"] or $_GET["page"] < 1)) {
+	if(!isset($_GET["page"]) or $_GET["page"] < 1) {
 		$page = 1;
 	} elseif(round($_GET["page"] - 1) * $page_limit >= $photo_count) {
 		$page = ceil($photo_count / $page_limit);
