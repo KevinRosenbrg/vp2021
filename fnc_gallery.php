@@ -143,39 +143,60 @@
 		return $gallery_html;
 	}
 	
-	function user_see_photo() {
-		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+//pildi andmete lugemine muutmiseks
+	function read_own_photo($photo){
+		$photo_data = [];
+		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("SELECT id FROM vp_photos WHERE userid = ?");
+        $stmt = $conn->prepare("SELECT filename, alttext, privacy FROM vp_photos WHERE id = ? AND userid = ? AND deleted IS NULL");
 		echo $conn->error;
-		$stmt->bind_param("i", $_SESSION["user_id"]);
+        $stmt->bind_param("ii", $photo, $_SESSION["user_id"]);
+        $stmt->bind_result($filename_from_db, $alttext_from_db, $privacy_from_db);
 		$stmt->execute();
-		if($stmt->fetch()) {
-			$see_photo = "Yes";
-		} else {
-			$see_photo = "No";
+		if($stmt->fetch()){
+            array_push($photo_data, true);
+			array_push($photo_data, $filename_from_db);
+			array_push($photo_data, $alttext_from_db);
+			array_push($photo_data, $privacy_from_db);
+        } else {
+			array_push($photo_data, false);
 		}
-		return $see_photo;
+		$stmt->close();
+		$conn->close();
+		return $photo_data;
 	}
 	
-	function show_selected_photo($photo_id) {
-		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+	function photo_data_update($photo, $alttext, $privacy){
+		$notice = null;
+		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("SELECT filename, alttext FROM vp_photos WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE vp_photos SET alttext = ?, privacy = ? WHERE id = ? AND userid = ?");
 		echo $conn->error;
-		$stmt->bind_param("i", $id_from_db);
-		$stmt->bind_result($filename_from_db, $alttext_from_db);
-		$stmt->execute();
-
-		$own_photo_html = 0;
-		$own_photo_html = '<img src="' .$GLOBALS["photo_thumbnail_upload_dir"] .$filename_from_db .'" alt="';
-		if(empty($alttext_from_db)) {
-			$own_photo_html .= "Üleslaetud foto";
+        $stmt->bind_param("siii", $alttext, $privacy, $photo, $_SESSION["user_id"]);
+        if($stmt->execute()){
+			$notice = "Andmete muutmine õnnestus!";
 		} else {
-			$own_photo_html .= $alttext_from_db;
+			$notice = "Andmete muutmisel tekkis tõrge!";
 		}
-		$own_photo_html .= '">' ."\n";
-		
-		return $own_photo_html;
+		$stmt->close();
+		$conn->close();
+		return $notice;
+	}
+	
+	function delete_photo($photo){
+		$notice = null;
+		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+        $stmt = $conn->prepare("UPDATE vp_photos SET deleted = NOW() WHERE id = ? AND userid = ?");
+		echo $conn->error;
+        $stmt->bind_param("ii", $photo, $_SESSION["user_id"]);
+        if($stmt->execute()){
+			$notice = "ok";
+		} else {
+			$notice = "Foto kustutamisel tekkis tõrge!";
+		}
+		$stmt->close();
+		$conn->close();
+		return $notice;
 	}
 ?>

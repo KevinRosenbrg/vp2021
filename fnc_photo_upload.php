@@ -2,7 +2,7 @@
 
 	$database = "if21_kevin_ros";
 
-		function resize_photo($src, $w, $h, $keep_orig_proportion = true){
+	function resize_photo($src, $w, $h, $keep_orig_proportion = true){
 		$image_w = imagesx($src);
 		$image_h = imagesy($src);
 		$new_w = $w;

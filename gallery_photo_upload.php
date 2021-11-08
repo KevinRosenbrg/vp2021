@@ -13,13 +13,13 @@
 	require_once("../../config.php");
 	require_once("fnc_photo_upload.php");
 	require_once("fnc_general.php");
+	require_once("classes/Photoupload.class.php"); //fotode üleslaadimise klass
 	
 	$photo_error = null;
 	$photo_upload_notice = null;
 	$normal_photo_max_width = 600;
 	$normal_photo_max_height = 400;	
 	
-	$file_type = null;
 	$file_name = null;
 	$alt_text = null;
 	$privacy = 1;
@@ -77,45 +77,48 @@
                 
                 //moodustan failinime, kasutame eesliidet
                 $file_name = $photo_filename_prefix ."_" .$time_stamp ."." .$file_type;
-                
-                //teen graafikaobjekti, image objekti
-                if($file_type == "jpg"){
-                    $my_temp_image = imagecreatefromjpeg($_FILES["photo_input"]["tmp_name"]);
-                }
-                if($file_type == "png"){
-                    $my_temp_image = imagecreatefrompng($_FILES["photo_input"]["tmp_name"]);
-                }
-                if($file_type == "gif"){
-                    $my_temp_image = imagecreatefromgif($_FILES["photo_input"]["tmp_name"]);
-                }
+				
+				//võtame kasutusele klassi
+				$photo_upload = new Photoupload($_FILES["photo_input"], $file_type);
                 
                 //loome uue pikslikogumi
-                $my_new_temp_image = resize_photo($my_temp_image, $normal_photo_max_width, $normal_photo_max_height);
+                //$my_new_temp_image = resize_photo($my_temp_image, $normal_photo_max_width, $normal_photo_max_height);
+				$photo_upload->resize_photo($normal_photo_max_width, $normal_photo_max_height);
                                 
                 //lisan vesimärgi
 				
-				add_watermark($my_new_temp_image, $watermark_file);
+				//add_watermark($my_new_temp_image, $watermark_file);
+				$photo_upload->add_watermark($watermark_file);
                 
                 //salvestan
-                $photo_upload_notice = "Vähendatud pildi " .save_image($my_new_temp_image, $file_type, $photo_normal_upload_dir .$file_name);
-                imagedestroy($my_new_temp_image);
+                //$photo_upload_notice = "Vähendatud pildi " .save_image($my_new_temp_image, $file_type, $photo_normal_upload_dir .$file_name);
+				$photo_upload_notice = "Vähendatud pildi " .$photo_upload->save_image($photo_normal_upload_dir .$file_name);
+
 				
 				//teen pisipildi
-				$my_new_temp_image = resize_photo($my_temp_image, $thumbnail_width, $thumbnail_height, false);
-                $photo_upload_notice .= " Pisipildi " .save_image($my_new_temp_image, $file_type, $photo_thumbnail_upload_dir .$file_name);
-                imagedestroy($my_new_temp_image);
+				$photo_upload->resize_photo($thumbnail_width, $thumbnail_height);
+				//$my_new_temp_image = resize_photo($my_temp_image, $thumbnail_width, $thumbnail_height, false);
+                $photo_upload_notice .= " Pisipildi " .$photo_upload->save_image($photo_thumbnail_upload_dir .$file_name);
+                //imagedestroy($my_new_temp_image);
                 
-                imagedestroy($my_temp_image);
+                //imagedestroy($my_temp_image);
+				
+				//unset($photo_upload);
                 
                 //kopeerime pildi originaalkujul, originaalnimega vajalikku kataloogi
-                if(move_uploaded_file($_FILES["photo_input"]["tmp_name"], $photo_orig_upload_dir .$file_name)){
-                    $photo_upload_notice .= " Originaalfoto laeti üles!";
+                //if(move_uploaded_file($_FILES["photo_input"]["tmp_name"], $photo_orig_upload_dir .$file_name)){
+                    //$photo_upload_notice .= " Originaalfoto laeti üles!";
                     //$photo_upload_notice = store_person_photo($file_name, $_POST["person_for_photo_input"]);
-                } else {
-                    $photo_upload_notice .= " Foto üleslaadimine ei õnnestunud!";
-                }
+                //} else {
+                    //$photo_upload_notice .= " Foto üleslaadimine ei õnnestunud!";
+                //}
+				$photo_upload_notice .= $photo_upload->save_orig($photo_orig_upload_dir, $file_name);
 				
-				$photo_upload_notice .= " " .store_photo_data($file_name, $alt_text, $privacy);
+				//$photo_upload_notice .= " " .store_photo_data($file_name, $alt_text, $privacy);
+				$photo_upload_notice .= " " .$photo_upload->store_photo_data($file_name, $alt_text, $privacy);
+				
+				unset($photo_upload);
+				
 				$alt_text = null;
 				$privacy = 1;
             }
