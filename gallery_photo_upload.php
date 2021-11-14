@@ -44,7 +44,7 @@
                 if($image_check["mime"] == "image/gif"){
                     $file_type = "gif";
                 }
-                //var_dump($image_check);
+                //$file_type->what_file_type($image_check); <<<--- ei toimi, sest klass ei ole veel kasutuses
             } else {
                 $photo_error = "Valitud fail ei ole pilt!";
             }

@@ -146,6 +146,19 @@
 			$stmt->close();
 			$conn->close();
 			return $notice;
-	}
+		}
+	
+		public function what_file_type($image_check) { //ei ole kasutuses
+			if($image_check["mime"] == "image/jpeg"){
+				$file_type = "jpg";
+			}
+			if($image_check["mime"] == "image/png"){
+				$file_type = "png";
+			}
+			if($image_check["mime"] == "image/gif"){
+				$file_type = "gif";
+			}
+			return $file_type;
+		}
 		
 	}//class lõppeb
