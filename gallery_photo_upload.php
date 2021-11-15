@@ -44,7 +44,7 @@
                 if($image_check["mime"] == "image/gif"){
                     $file_type = "gif";
                 }
-                //$file_type->what_file_type($image_check); <<<--- ei toimi, sest klass ei ole veel kasutuses
+                //$photoupload->what_file_type($image_check); <<<--- ei toimi, sest klass ei ole veel kasutuses (pole testitud)
             } else {
                 $photo_error = "Valitud fail ei ole pilt!";
             }
@@ -131,7 +131,7 @@
 		}
     }
 	
-	
+	$to_head = '<script src="javascript/checkFileSize.js" defer></script>' ."\n";
     
     require("page_header.php");
 ?>
@@ -162,7 +162,7 @@
         <input type="radio" name="privacy_input" id="privacy_input_3" value="3" <?php if($privacy == 3){echo " checked";} ?>>
         <label for="privacy_input_3">Avalik (kõik näevad)</label>
         <br>
-        <input type="submit" name="photo_submit" value="Lae pilt üles">
+        <input type="submit" name="photo_submit" id="photo_submit" value="Lae pilt üles"><span id="notice"></span>
     </form>
 		<span><?php echo $photo_upload_notice; ?></span>
 		<hr>
