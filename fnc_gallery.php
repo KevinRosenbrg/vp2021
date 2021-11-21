@@ -54,6 +54,15 @@
 			}
 			$gallery_html .= '" class="thumbs" data-id="' .$id_from_db .'" data-fn="' .$filename_from_db .'">' ."\n";
 			$gallery_html .= "<p>" .wrong_into_correct_time($created_from_db) ."</p>";
+			
+			// $stmt = $conn->prepare("SELECT vp_photos.id, filename, alttext, firstname, lastname, AVG(rating) as AvgValue FROM vp_photos JOIN vp_users ON vp_photos.userid = vp_users.id LEFT JOIN vp_photoratings ON vpr_photoratings.photoid = vp_photos.id WHERE vp_photos.privacy >= ? AND deleted IS NULL GROUP BY vp_photos.id DESC");
+			// echo $conn->error;
+			// $stmt->bind_result($photo_id, $filename, $alt_text, $firstname, $lastname, $avg_rating);
+			// $stmt->execute();
+			// while($stmt->fetch()) {
+				// $gallery_html .= '<p id="rating' .$photo_id .'">' .$avg_rating ."</p>";
+			// }
+			
 			$gallery_html .= "</div>";
 		}
 		if(empty($gallery_html)) {

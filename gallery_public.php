@@ -11,7 +11,6 @@
 		header("Location: page.php");
 	}
 	
-	$author_name = "Kevin Rosenberg";
 	require_once("../../config.php");
 	require_once("fnc_gallery.php");
 	require_once("fnc_time_formater.php");
@@ -57,7 +56,7 @@
         </div>
     </div>
 		
-		<h1><?php echo $author_name; ?>, veebiprogrammeerimine</h1>
+		<h1><?php echo $_SESSION["first_name"] ." " .$_SESSION["last_name"]; ?>, veebiprogrammeerimine</h1>
 		<div>
 			<p>See leht on valminud õppetöö raames ja ei sisalda mingisugust tõsiseltvõetavat sisu!</p>
 		</div>
