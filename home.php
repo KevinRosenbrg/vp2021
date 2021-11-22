@@ -1,16 +1,12 @@
 <?php 
 	//alustame sessiooni
-	session_start();
+	//session_start();
 	
-	if(!isset($_SESSION["user_id"])) {
-		header("Location: page.php");
-	}
+	require_once("classes/SessionManager.classes.php");
+	SessionManager::sessionStart("vp", 0, "/~kevros/vp2021/", "greeny.cs.tlu.ee");
 	
-	if(isset($_GET["logout"])) {
-		session_destroy();
-		header("Location: page.php");
-	}
-	
+	require_once("use_session.php");
+
 	//testime klassi
 	//require_once("classes/test.class.php");
 	//$my_test_object = new Test(33);
@@ -20,12 +16,27 @@
 	//$my_test_object->reveal();
 	//unset($my_test_object);
 	
+	setcookie("vpvisitor", $_SESSION["first_name"] ." " .$_SESSION["last_name"], time() + (86400 * 8), "/~kevros/vp2021/", "greeny.cs.tlu.ee", isset($_SERVER["HTTPS"]), true);
+	$last_visitor = null;
+	if (isset($_COOKIE["vpvisitor"])) {
+		$last_visitor = "<p>Viimati külastas lehte: " .$_COOKIE["vpvisitor"] .".</p> \n";
+	} else {
+		$last_visitor = "<p>Küpsiseid ei leitud, viimast külastajat ei leitud</p> \n";
+	}
+	
+	//küpsise kustutamiseks määratakse talle varasem (enne praegust hetke aegumine)
+	
+	
+	
 	require_once("page_header.php");
 ?>
 		<h1><?php echo $_SESSION["first_name"] ." " .$_SESSION["last_name"]; ?>, veebiprogrammeerimine</h1>
 		<div>
 			<p>See leht on valminud õppetöö raames ja ei sisalda mingisugust tõsiseltvõetavat sisu!</p>
 		</div>
+		<hr>
+		<?php echo $last_visitor; ?>
+		<hr>
 		<p>Õppetöö toimus <a href="https://www.tlu.ee/dt">Tallinna Ülikooli Digitehnoloogiate Instituudis</a>.</p>
 		<a href="user_profile.php">Kasutajaprofiil</a><br>
 		<a href="add_films.php">Lisa filme</a><br>
@@ -37,6 +48,7 @@
 		<a href="gallery_photo_upload.php">Fotode üleslaadimine</a><br>
 		<a href="gallery_public.php">Fotode galerii</a><br>
 		<a href="gallery_own.php">Oma fotode galerii</a><br>
+		<a href="add_news.php">Uudise lisamine</a><br>
 		
 		<hr>
 		<ul>

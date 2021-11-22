@@ -1,10 +1,7 @@
 <?php
 	//alustame sessiooni
-	session_start();
-	
-	if(!isset($_SESSION["user_id"])) {
-		header("Location: page.php");
-	}
+	require_once("classes/SessionManager.classes.php");
+	SessionManager::sessionStart("vp", 0, "/~kevros/vp2021/", "greeny.cs.tlu.ee");
 	
 	require_once("../../config.php");
 	
