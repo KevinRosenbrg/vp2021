@@ -33,7 +33,7 @@
 		//selles on ka htmlspecialchars() funktsioon, mis kodeerib html erimärgid ringi, ohutuks ("<" -> &lt)
 		//pärast, uudise näitamisel, et html taastuks, on vaja: htmlspecialchars_decode(uudis_andmebaasist)
 		//kui on ka foto valitud, salvestage see esimesena, ka andmetabelisse. Siis saate kohe ka tema id kätte: $photo_id = $conn->insert_id;
-		//uudise näitamisel tuleb arvestada ka aegumist
+		//uudise näitamisel tuleb arvestada ka aegumist.
 		//today = date("Y-m-d");
 		//SQL lauses	WHERE added >= ?
     }
