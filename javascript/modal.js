@@ -50,6 +50,7 @@ function storeRating(){
             if(this.readyState == 4 && this.status == 200){
                 //mida teeme, kui tuli vastus
                 document.querySelector("#avgRating").innerHTML = "Keskmine hinne: " + this.responseText;
+				document.querySelector("#rating" + photoId).innerHTML = this.responseText;
                 document.querySelector("#storeRating").removeEventListener("click", storeRating);
             }
         };

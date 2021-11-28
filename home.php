@@ -1,10 +1,5 @@
 <?php 
 	//alustame sessiooni
-	//session_start();
-	
-	require_once("classes/SessionManager.classes.php");
-	SessionManager::sessionStart("vp", 0, "/~kevros/vp2021/", "greeny.cs.tlu.ee");
-	
 	require_once("use_session.php");
 
 	//testime klassi
@@ -16,13 +11,13 @@
 	//$my_test_object->reveal();
 	//unset($my_test_object);
 	
-	setcookie("vpvisitor", $_SESSION["first_name"] ." " .$_SESSION["last_name"], time() + (86400 * 8), "/~kevros/vp2021/", "greeny.cs.tlu.ee", isset($_SERVER["HTTPS"]), true);
-	$last_visitor = null;
-	if (isset($_COOKIE["vpvisitor"])) {
-		$last_visitor = "<p>Viimati külastas lehte: " .$_COOKIE["vpvisitor"] .".</p> \n";
-	} else {
-		$last_visitor = "<p>Küpsiseid ei leitud, viimast külastajat ei leitud</p> \n";
-	}
+	setcookie("vpvisitor", $_SESSION["first_name"] ." " .$_SESSION["last_name"], time() + (86400 * 9), "/~rinde/vp2021/", "greeny.cs.tlu.ee", isset($_SERVER["HTTPS"]), true);
+    $last_visitor = null;
+    if(isset($_COOKIE["vpvisitor"])){
+        $last_visitor = "<p>Viimati külastas lehte: " .$_COOKIE["vpvisitor"] .".</p> \n";
+    } else {
+        $last_visitor = "<p>Küpsiseid ei leitud, viimane külastaja pole teada.</p> \n";
+    }
 	
 	//küpsise kustutamiseks määratakse talle varasem (enne praegust hetke aegumine)
 	

@@ -2,7 +2,25 @@
 
 	$database = "if21_kevin_ros";
 
-	function resize_photo($src, $w, $h, $keep_orig_proportion = true){
+	function store_photo_data($image_file_name, $alt, $privacy){
+		$notice = null;
+		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+		$stmt = $conn->prepare("INSERT INTO vp_photos (userid, filename, alttext, privacy) VALUES (?, ?, ?, ?)");
+		echo $conn->error;
+		$stmt->bind_param("issi", $_SESSION["user_id"], $image_file_name, $alt, $privacy);
+		if($stmt->execute()){
+		  $notice = "Foto lisati andmebaasi!";
+		} else {
+		  $notice = "Foto lisamisel andmebaasi tekkis tõrge: " .$stmt->error;
+		}
+		
+		$stmt->close();
+		$conn->close();
+		return $notice;
+	}
+
+	/* function resize_photo($src, $w, $h, $keep_orig_proportion = true){
 		$image_w = imagesx($src);
 		$image_h = imagesy($src);
 		$new_w = $w;
@@ -38,11 +56,11 @@
 			
 		//loome uue ajutise pildiobjekti
 		$my_new_image = imagecreatetruecolor($new_w, $new_h);
-		//sailitame png pildi puhul labipaistvuse
-		imagesavealpha($my_new_image, true);
-		$trans_color = imagecolorallocatealpha($my_new_image, 0, 0, 0, 127);
-		imagefill($my_new_image, 0, 0, $trans_color);
-		
+        //säilitame png piltide puhul läbipaistvuse
+        imagesavealpha($my_new_image, true);
+        $trans_color = imagecolorallocatealpha($my_new_image, 0, 0, 0, 127);
+        imagefill($my_new_image, 0, 0, $trans_color);
+        
 		imagecopyresampled($my_new_image, $src, 0, 0, $cut_x, $cut_y, $new_w, $new_h, $cut_size_w, $cut_size_h);
 		return $my_new_image;
 	}
@@ -85,23 +103,5 @@
         }
         
         return $notice;
-    }
-	
-	function store_photo_data($image_file_name, $alt, $privacy){
-		$notice = null;
-		$conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
-		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("INSERT INTO vp_photos (userid, filename, alttext, privacy) VALUES (?, ?, ?, ?)");
-		echo $conn->error;
-		$stmt->bind_param("issi", $_SESSION["user_id"], $image_file_name, $alt, $privacy);
-		if($stmt->execute()){
-		  $notice = "Foto lisati andmebaasi!";
-		} else {
-		  $notice = "Foto lisamisel andmebaasi tekkis tõrge: " .$stmt->error;
-		}
-		
-		$stmt->close();
-		$conn->close();
-		return $notice;
-	}
+    } */
 ?>

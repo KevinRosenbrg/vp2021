@@ -10,8 +10,6 @@
 	$photo_data = [];
 	$photo_data_update_notice = null;
     
-
-	
 	if(isset($_POST["photo_input"])){
 		$privacy = 1;
 		if(isset($_POST["privacy_input"])){

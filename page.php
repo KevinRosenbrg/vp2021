@@ -7,12 +7,11 @@
 	require_once("../../config.php");
 	require_once("fnc_user.php");
 	require_once("fnc_gallery.php");
+	
 	$author_name = "Kevin Rosenberg";
 	$todays_evaluation = null;
-	
 	$inserted_adjective = null;
 	$adjective_error = null;
-	
 	$where_email = null;
 	$inserted_email = null;
 	$password_error = null;
@@ -32,12 +31,9 @@
 	}
 	
 	$pic_num = null;
-	//$photo_dir = "../photos/";
 	$photo_dir = "photos/";
 	$allowed_photo_types = ["image/jpeg", "image/png"];
-	//$all_files = scandir($photo_dir,);
 	$all_files = array_slice(scandir($photo_dir), 2);
-	//$only_files = array_slice($all_files, 2);
 	
 	//sõelun välja ainult lubatud pildid
 	$photo_files = [];

@@ -2,6 +2,9 @@
 	require_once("../../config.php");
 	$database = "if21_kevin_ros";
 	
+	$id = null;
+	$privacy = 3;
+	
 	if(isset($_GET["photo"]) and !empty($_GET["photo"])) {
 		$id = filter_var($_GET["photo"], FILTER_VALIDATE_INT);
 	}
@@ -18,9 +21,9 @@
 		$stmt->bind_result($filename_from_db);
 		$stmt->execute();
 		if($stmt->fetch()) {
-			$output = $photo_normal_upload_dir .$filename_from_db
+			$output = $photo_normal_upload_dir .$filename_from_db;
 			$check = getimagesize($output);
-			$type = $check["mime"]
+			$type = $check["mime"];
 		}
 		$stmt->close();
 		$conn->close();

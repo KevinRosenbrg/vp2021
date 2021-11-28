@@ -7,41 +7,34 @@
 	
 	$database = "if21_kevin_ros";
 	
-	$id = $_GET["photo"];
-    $rating = $_GET["rating"];
+	if(isset($_GET["photo"]) and !empty($_GET["photo"])){
+		$id = filter_var($_GET["photo"], FILTER_VALIDATE_INT);
+	}
+	if(isset($_GET["rating"]) and !empty($_GET["rating"])){
+		$rating = filter_var($_GET["rating"], FILTER_VALIDATE_INT);
+	}
 	
-	if ($id != null and $rating != null) {
+	$response = "Hinne teadmata!";
+	
+	if(!empty($id)){
 		$conn = new mysqli($server_host, $server_user_name, $server_password, $database);
 		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("INSERT INTO vp_photoratings (photoid, userid, rating) VALUES(?, ?, ?)");
-		echo $conn->error;
-		$stmt->bind_param("iii", $id, $_SESSION["user_id"], $rating);
-		$stmt->execute();
-		$stmt->close();
-		
+		if(!empty($rating)){
+			$stmt = $conn->prepare("INSERT INTO vp_photoratings (photoid, userid, rating) VALUES(?, ?, ?)");
+			$stmt->bind_param("iii", $id, $_SESSION["user_id"], $rating);
+			$stmt->execute();
+			$stmt->close();
+		}
 		//loeme keskmise hinde
 		$stmt = $conn->prepare("SELECT AVG(rating) as avgValue FROM vp_photoratings WHERE photoid = ?");
 		echo $conn->error;
 		$stmt->bind_param("i", $id);
 		$stmt->bind_result($score);
 		$stmt->execute();
-		$stmt->fetch();
+		if($stmt->fetch()){
+			$response = "Hinne: " .round($score, 2);
+		}
 		$stmt->close();
 		$conn->close();
-		echo round($score, 2);
-	} elseif ($id == null or $id == null and $rating == null) {
-		echo "Hinne teadmata!";
-	} elseif ($rating = null) {
-		// tagasta vastava id-ga foto keskmine hinne
-		$conn = new mysqli($server_host, $server_user_name, $server_password, $database);
-		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("SELECT AVG(rating) as avgValue FROM vp_photoratings WHERE photoid = ?");
-		echo $conn->error;
-		$stmt->bind_param("i", $id);
-		$stmt->bind_result($score);
-		$stmt->execute();
-		$stmt->fetch();
-		$stmt->close();
-		$conn->close();
-		echo round($score, 2);
 	}
+    echo $response;

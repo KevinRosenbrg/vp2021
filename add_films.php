@@ -4,7 +4,6 @@
 	
 	$author_name = "Kevin Rosenberg";
 	require_once("../../config.php");
-	//echo $server_host;
 	require_once("fnc_film.php");
 	
 	$film_store_notice = null;

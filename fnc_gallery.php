@@ -1,6 +1,8 @@
 <?php
 	$database = "if21_kevin_ros";
 	
+	require_once("fnc_time_formater.php");
+	
 	function show_latest_public_photo() {
 		$photo_html = null;
 		$privacy = 3;
@@ -38,11 +40,12 @@
 		$skip = ($page - 1) * $page_limit;
 		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("SELECT id, filename, alttext, created FROM vp_photos WHERE privacy >= ? AND deleted IS NULL ORDER BY id DESC LIMIT ?,?");
+		//$stmt = $conn->prepare("SELECT id, filename, alttext, created FROM vp_photos WHERE privacy >= ? AND deleted IS NULL ORDER BY id DESC LIMIT ?,?");
+		$stmt = $conn->prepare("SELECT vp_photos.id, filename, alttext, vp_photos.created, firstname, lastname, AVG(rating) as AvgValue FROM vp_photos JOIN vp_users ON vp_photos.userid = vp_users.id LEFT JOIN vp_photoratings ON vp_photoratings.photoid = vp_photos.id WHERE vp_photos.privacy >= ? AND deleted IS NULL GROUP BY vp_photos.id DESC LIMIT ?,?");
 		echo $conn->error;
 		$stmt->bind_param("iii", $privacy, $skip, $page_limit);
-		$stmt->bind_result($id_from_db, $filename_from_db, $alttext_from_db, $created_from_db);
-		$stmt->execute();
+        $stmt->bind_result($id_from_db, $filename_from_db, $alttext_from_db, $created_from_db, $firstname_from_db, $lastname_from_db, $avg_rating_from_db);
+        $stmt->execute();
 		while($stmt->fetch()) {
 			//<div class="thumbgallery">
 			//<img src="kataloog.file" alt="tekst" class="thumbs" data-id="x" data-fn="see.jpg">
@@ -55,21 +58,21 @@
 				$gallery_html .= $alttext_from_db;
 			}
 			$gallery_html .= '" class="thumbs" data-id="' .$id_from_db .'" data-fn="' .$filename_from_db .'">' ."\n";
-			$gallery_html .= "<p>" .wrong_into_correct_time($created_from_db) ."</p>";
-			
-			// $stmt = $conn->prepare("SELECT vp_photos.id, filename, alttext, firstname, lastname, AVG(rating) as AvgValue FROM vp_photos JOIN vp_users ON vp_photos.userid = vp_users.id LEFT JOIN vp_photoratings ON vp_photoratings.photoid = vp_photos.id WHERE vp_photos.privacy >= ? AND deleted IS NULL GROUP BY vp_photos.id DESC LIMIT ?, ?");
-			// echo $conn->error;
-			// $stmt->bind_result($photo_id, $filename, $alt_text, $firstname, $lastname, $avg_rating);
-			// $stmt->execute();
-			// while($stmt->fetch()) {
-				// $gallery_html .= '<p id="rating' .$photo_id .'">' .$avg_rating ."</p>";
-			// }
-			
-			$gallery_html .= "</div>";
+			$gallery_html .= "<p>" .$firstname_from_db ." " .$lastname_from_db ."<br> \n";
+			$gallery_html .= "Lisatud: " .wrong_into_correct_time($created_from_db) ."</p> \n";
+			$gallery_html .= '<p id="rating' .$id_from_db .'">';
+			if(!empty($avg_rating_from_db)){
+				$gallery_html .= "Hinne: " .round($avg_rating_from_db, 2);
+			} else {
+				$gallery_html .= "Pole hinnatud";
+			}
+			$gallery_html .= "</p> \n";
+            $gallery_html .= "</div> \n";
 		}
 		if(empty($gallery_html)) {
 			$photo_html = "<p>Kahjuks avalikke fotosid üles laetud pole!</p> \n";
 		}
+		
 		$stmt->close();
 		$conn->close();
 		return $gallery_html;
@@ -115,21 +118,40 @@
 		if($stmt->fetch()) {
 			$photo_count = $count;
 		}
+		
 		$stmt->close();
 		$conn->close();
 		return $photo_count;
 	}
 	
-		function read_own_photo_thumbs($page_limit, $page) {
+	function count_own_photos(){
+        $photo_count = 0;
+        $conn = new mysqli($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
+		$conn->set_charset("utf8");
+        $stmt = $conn->prepare("SELECT COUNT(id) FROM vp_photos WHERE userid = ? AND deleted IS NULL");
+        echo $conn->error;
+        $stmt->bind_param("i", $_SESSION["user_id"]);
+        $stmt->bind_result($count);
+        $stmt->execute();
+        if($stmt->fetch()){
+            $photo_count = $count;
+        }
+        $stmt->close();
+		$conn->close();
+		return $photo_count;
+	}
+	
+	function read_own_photo_thumbs($page_limit, $page) {
 		$gallery_html = null;
 		$skip = ($page - 1) * $page_limit;
 		$conn = new mysqli ($GLOBALS["server_host"], $GLOBALS["server_user_name"], $GLOBALS["server_password"], $GLOBALS["database"]);
 		$conn->set_charset("utf8");
-		$stmt = $conn->prepare("SELECT id, filename, alttext FROM vp_photos WHERE userid = ? AND deleted IS NULL ORDER BY id DESC LIMIT ?,?");
-		echo $conn->error;
-		$stmt->bind_param("iii", $_SESSION["user_id"], $skip, $page_limit);
-		$stmt->bind_result($id_from_db, $filename_from_db, $alttext_from_db);
-		$stmt->execute();
+		$stmt = $conn->prepare("SELECT id, filename, created, alttext FROM vp_photos WHERE userid = ? AND deleted IS NULL ORDER BY id DESC LIMIT ?,?");
+        echo $conn->error;
+        $stmt->bind_param("iii", $_SESSION["user_id"], $skip, $page_limit);
+        $stmt->bind_result($id_from_db, $filename_from_db, $created_from_db, $alttext_from_db);
+        $stmt->execute();
+		
 		while($stmt->fetch()) {
 			//<div class="thumbgallery">
 			//<img src="kataloog.file" alt="tekst">
@@ -144,7 +166,8 @@
 			}
 			$gallery_html .= '" class="thumbs">' ."\n";
 			$gallery_html .= "</a> \n";
-			$gallery_html .= "</div>";
+			$gallery_html .= "Lisatud: " .wrong_into_correct_time($created_from_db) ."</p> \n";
+			$gallery_html .= "</div> \n";
 		}
 		if(empty($gallery_html)) {
 			$photo_html = "<p>Kahjuks avalikke fotosid üles laetud pole!</p> \n";

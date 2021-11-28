@@ -1,22 +1,13 @@
 <?php
 	//alustame sessiooni
-	session_start();
-	
-	if(!isset($_SESSION["user_id"])) {
-		header("Location: page.php");
-	}
-	
-	if(isset($_GET["logout"])) {
-		session_destroy();
-		header("Location: page.php");
-	}
+	require_once("use_session.php");
 	
 	require_once("../../config.php");
 	require_once("fnc_gallery.php");
 	require_once("fnc_time_formater.php");
 	
 	$page = 1;
-	$page_limit = 5;
+	$page_limit = 15;
 	$photo_count = count_public_photos(2);
 	if(!isset($_GET["page"]) or $_GET["page"] < 1) {
 		$page = 1;

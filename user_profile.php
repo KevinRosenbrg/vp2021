@@ -16,6 +16,8 @@
 		$bg_color = $_POST["bg_color_input"];
 		$text_color = $_POST["text_color_input"];
 		$notice = store_profile($description, $bg_color, $text_color);
+		$_SESSION["bg_color"] = $_POST["bg_color_input"];
+		$_SESSION["text_color"] = $_POST["text_color_input"];
 	}
 	
 	require_once("page_header.php");
