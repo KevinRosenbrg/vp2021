@@ -31,7 +31,7 @@
 			$privacy = filter_var($_POST["privacy_input"], FILTER_VALIDATE_INT);
 		}
 		if(empty($privacy)){
-			$photo_error . " Privaatsus on määramata!";
+			$photo_error = " Privaatsus on määramata!";
 		}
 		//kas fail on valitud
         if(isset($_FILES["photo_input"]["tmp_name"]) and !empty($_FILES["photo_input"]["tmp_name"])){

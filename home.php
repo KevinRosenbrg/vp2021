@@ -33,21 +33,24 @@
 		<?php echo $last_visitor; ?>
 		<hr>
 		<p>Õppetöö toimus <a href="https://www.tlu.ee/dt">Tallinna Ülikooli Digitehnoloogiate Instituudis</a>.</p>
-		<a href="user_profile.php">Kasutajaprofiil</a><br>
-		<a href="add_films.php">Lisa filme</a><br>
-		<a href="add_movie_info.php">Lisa muud infot</a><br>
-		<a href="list_films.php">Uuri filme</a><br>
-		<a href="movie_relations.php">Filmi relatsioonid</a><br>
-		<a href="show_relations.php">Uuri relatsioone</a><br>
-		<a href="list_people.php">Uuri inimesi</a><br>
-		<a href="gallery_photo_upload.php">Fotode üleslaadimine</a><br>
-		<a href="gallery_public.php">Fotode galerii</a><br>
-		<a href="gallery_own.php">Oma fotode galerii</a><br>
-		<a href="add_news.php">Uudise lisamine</a><br>
-		
+		<p>
+			<a href="user_profile.php">Kasutajaprofiil</a> //
+			<a href="add_films.php">Lisa filme</a> //
+			<a href="add_movie_info.php">Lisa muud infot</a> //
+			<a href="list_films.php">Uuri filme</a> //
+			<a href="movie_relations.php">Filmi relatsioonid</a> //
+			<a href="show_relations.php">Uuri relatsioone</a> //
+			<a href="list_people.php">Uuri inimesi</a> //
+			<a href="gallery_photo_upload.php">Fotode üleslaadimine</a> //
+			<a href="gallery_public.php">Fotode galerii</a> //
+			<a href="gallery_own.php">Oma fotode galerii</a> //
+			<a href="add_news.php">Uudise lisamine</a> //
+		</p>
 		<hr>
 		<ul>
 			<li><a href="?logout=1">Logi välja</a></li>
 		</ul>
+		<hr>
+		<p>Siia tulevad uudised..</p>
 	</body>
 </html>
