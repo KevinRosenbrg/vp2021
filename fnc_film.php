@@ -77,16 +77,12 @@
 		$conn->set_charset("utf8");
 		$stmt = $conn->prepare("SELECT first_name, last_name, birth_date FROM person");
 		echo $conn->error;
-		
 		$stmt->bind_result($first_name_from_db, $last_name_from_db, $birth_date_from_db);
-	
 		$stmt->execute();
 		$people_html = null;
-		
 		while($stmt->fetch()) {
 			$people_html = "<p>" .$first_name_from_db ." " .$last_name_from_db ."/" .wrong_into_correct_time($birth_date_from_db) ."</p> \n";
 		}
-		
 		$stmt->close();
 		$conn->close();
 		return $people_html;
